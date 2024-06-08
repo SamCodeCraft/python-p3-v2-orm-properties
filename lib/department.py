@@ -15,6 +15,31 @@ class Department:
     def __repr__(self):
         return f"<Department {self.id}: {self.name}, {self.location}>"
 
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        if isinstance(name, str) and len(name):
+            self._name = name
+        else:
+            raise ValueError(
+                "Name must be a non-empty string"
+            )
+
+    @property
+    def location(self):
+        return self._location
+    @location.setter
+    def location(self, location):
+        if isinstance(location, str) and len(location):
+            self._location = location
+        else:
+            raise ValueError(
+                "Location must be a non-empty string"
+            )
+
     @classmethod
     def create_table(cls):
         """ Create a new table to persist the attributes of Department instances """
@@ -35,7 +60,6 @@ class Department:
         """
         CURSOR.execute(sql)
         CONN.commit()
-
     def save(self):
         """ Insert a new row with the name and location values of the current Department instance.
         Update object id attribute using the primary key value of new row.
@@ -67,7 +91,6 @@ class Department:
         """
         CURSOR.execute(sql, (self.name, self.location, self.id))
         CONN.commit()
-
     def delete(self):
         """Delete the table row corresponding to the current Department instance,
         delete the dictionary entry, and reassign id attribute"""
@@ -102,7 +125,6 @@ class Department:
             department.id = row[0]
             cls.all[department.id] = department
         return department
-
     @classmethod
     def get_all(cls):
         """Return a list containing a Department object per row in the table"""
@@ -135,7 +157,6 @@ class Department:
             FROM departments
             WHERE name is ?
         """
-
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
